@@ -217,7 +217,7 @@ def table_100_dernieres_ventes(df):
         "Discount_pct": "Remise (%)"
     }
 
-    # On garde uniquement ces colonnes dans cet ordre
+    # On garde les colonnes dans cet ordre
     df_sorted = df_sorted[list(columns.keys())]
 
     return dash_table.DataTable(
@@ -240,9 +240,13 @@ app.layout = dbc.Container([
     # Ligne 1: En-tête
    dbc.Row([
         dbc.Col(
-            html.H3("ECAP Store", style={"margin": 0, "color": "white", "fontWeight": "bold"}), 
+            html.H3("ECAP Store", style={"margin": 0, "padding": "10px 20px"}), 
             md=6, 
-            style={"backgroundColor": "#D440A8", "height": "70px", "display":"flex","alignItems":"center", "paddingLeft": "30px"}
+            style={
+                "backgroundColor": "#D440A8", 
+                "height": "70px", 
+                "display":"flex",
+                "alignItems":"center"}
         ),
 
         dbc.Col(
