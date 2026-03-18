@@ -21,15 +21,8 @@ data["Total_price"] = data["Quantity"] * data["Avg_Price"] * (1 - data["Discount
 print("Colonnes disponibles dans le DataFrame :")
 print(data.columns)
 
-app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
-dropdown_style = {
-    "border": "none",
-    "borderRadius": "10px",
-    "padding": "6px 10px",
-    "fontSize": "15px",
-    "color": "#424242"
-}
 
 title_style = {
     "fontSize": "20px",
@@ -257,7 +250,8 @@ app.layout = dbc.Container([
                 options=[{"label": loc, "value": loc} for loc in sorted(data["Location"].dropna().unique())],
                 placeholder="Choisissez une ou plusieurs zones",
                 multi=True,
-                style=dropdown_style
+                style={"border": "1px solid #ccc", "borderRadius": "10px", "padding": "6px 10px", "fontSize": "15px", "color": "#424242", "backgroundColor": "white", "height": "40px",
+                       'width': '100%', 'minWidth': '300px'}
             ),
             md=6,
             style={"backgroundColor": "#D440A8", "border": "none", "height": "70px", "paddingTop": "10px 20px", "display":"flex", "alignItems":"center"}
