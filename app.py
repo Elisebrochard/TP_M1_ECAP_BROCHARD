@@ -21,7 +21,7 @@ data["Total_price"] = data["Quantity"] * data["Avg_Price"] * (1 - data["Discount
 print("Colonnes disponibles dans le DataFrame :")
 print(data.columns)
 
-app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 
 title_style = {
@@ -238,11 +238,12 @@ def table_100_dernieres_ventes(df):
 app.layout = dbc.Container([
 
     # Ligne 1: En-tête
-    dbc.Row([
+   dbc.Row([
         dbc.Col(
-            html.H3("ECAP Store", style={"margin": 0, "padding": "10px 20px"}), 
-                md=6, 
-                style={"backgroundColor": "#D440A8", "border": "none", "height": "70px", "padding":"10px 20px", "display":"flex","alignItems":"center"}),
+            html.H3("ECAP Store", style={"margin": 0, "color": "white", "fontWeight": "bold"}), 
+            md=6, 
+            style={"backgroundColor": "#D440A8", "height": "70px", "display":"flex","alignItems":"center", "paddingLeft": "30px"}
+        ),
 
         dbc.Col(
             dcc.Dropdown(
@@ -250,16 +251,21 @@ app.layout = dbc.Container([
                 options=[{"label": loc, "value": loc} for loc in sorted(data["Location"].dropna().unique())],
                 placeholder="Choisissez une ou plusieurs zones",
                 multi=True,
-                style={"border": "1px solid #ccc", "borderRadius": "10px", "padding": "6px 10px", "fontSize": "15px", "color": "#424242", "backgroundColor": "white", "height": "40px",
-                       'width': '100%', 'minWidth': '300px'}
+                style={"width": "100%"}
             ),
             md=6,
-            style={"backgroundColor": "#D440A8", "border": "none", "height": "70px", "paddingTop": "10px 20px", "display":"flex", "alignItems":"center"}
+            style={
+                "backgroundColor": "#D440A8", 
+                "height": "70px", 
+                "display":"flex", 
+                "alignItems":"center", 
+                "paddingRight": "30px"
+            }
         ),
-    ]),
+    ], className="g-0"),
 
     # Ligne 2: Contenu principal
-    dbc.Row([
+       dbc.Row([
 
         # Colonne gauche
         dbc.Col([
