@@ -204,7 +204,16 @@ def plot_top_10_ventes(df, mode="group"):
 
 
 def table_100_dernieres_ventes(df):
-    df_sorted = df.sort_values("Transaction_Date", ascending=False).head(100)
+
+    # 1. On trie et on prend les 100 premiers
+    df_sorted = df.sort_values("Transaction_Date", ascending=False).head(100).copy()
+
+    # 2. On s'assure que c'est du datetime AVANT d'utiliser .dt
+    df_sorted["Transaction_Date"] = pd.to_datetime(df_sorted["Transaction_Date"])
+
+    # 3. On formate en DD/MM/YYYY (plus de T00:00:00 !)
+    df_sorted["Transaction_Date"] = df_sorted["Transaction_Date"].dt.strftime('%d/%m/%Y')
+   
 
     # Colonnes à afficher + noms en français
     columns = {
@@ -238,15 +247,10 @@ def table_100_dernieres_ventes(df):
 app.layout = dbc.Container([
 
     # Ligne 1: En-tête
-   dbc.Row([
-        dbc.Col(
-            html.H3("ECAP Store", style={"margin": 0, "padding": "10px 20px"}), 
-            md=6, 
-            style={
-                "backgroundColor": "#D440A8", 
-                "height": "70px", 
-                "display":"flex",
-                "alignItems":"center"}
+  dbc.Row([
+        dbc.Col(html.H3("ECAP Store", style={"margin": 0, "padding": "15px", "fontWeight": "bold", "color": "white"}), 
+                md=6, 
+                style={"backgroundColor": "#D440A8", "border": "none", "height": "70px"},
         ),
 
         dbc.Col(
@@ -266,7 +270,7 @@ app.layout = dbc.Container([
                 "paddingRight": "30px"
             }
         ),
-    ], className="g-0"),
+    ], className="g-0", style={"margin": "0px"}),
 
     # Ligne 2: Contenu principal
        dbc.Row([
@@ -356,7 +360,8 @@ app.layout = dbc.Container([
 
     ]),
 
-], fluid=True)
+], fluid=True, style={"padding": "0px", "margin": "0px", "maxWidth": "100%"})
+
 
 # Callbacks
 @app.callback(
@@ -369,19 +374,24 @@ app.layout = dbc.Container([
     Input("zones-dropdown", "value")
 )
 def update_dashboard(selected_zones):
+    # 1. Filtrage classique
     if selected_zones:
-        df_filtered = data[data["Location"].isin(selected_zones)]
+        df_filtered = data[data["Location"].isin(selected_zones)].copy()
     else:
         df_filtered = data.copy()
 
-    # Graphiques
+    # 2. Préparation des graphiques (on garde le format datetime ici)
     fig_indic = create_indicators(df_filtered)
     fig_top10 = plot_top_10_ventes(df_filtered)
     fig_evo = plot_evolution_chiffre_affaire(df_filtered)
 
-    # Tableau
-    df_sorted = df_filtered.sort_values("Transaction_Date", ascending=False).head(100)
-    table_data = df_sorted.to_dict("records")
+    # 3. Préparation spécifique pour le TABLEAU
+    df_table = df_filtered.sort_values("Transaction_Date", ascending=False).head(100).copy()
+    
+    # On force la conversion en texte propre AVANT d'envoyer au tableau
+    df_table["Transaction_Date"] = pd.to_datetime(df_table["Transaction_Date"]).dt.strftime('%d/%m/%Y')
+    
+    table_data = df_table.to_dict("records")
 
     return fig_indic, fig_top10, fig_evo, table_data
 
